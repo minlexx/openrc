@@ -167,9 +167,18 @@ int main(int argc, char **argv)
 #ifdef HAVE_SELINUX
 	int			enforce = 0;
 #endif
+	int ignore_pid = 0;
 
-	if (getpid() != 1)
+	if (argc > 1) {
+		if (strcmp(argv[1], "-i") == 0) {
+			ignore_pid = 1;
+			printf("openrc-init: ignoring pid...\n");
+		}
+	}
+
+	if ((getpid() != 1) && (ignore_pid == 0)) {
 		return 1;
+	}
 
 #ifdef HAVE_SELINUX
 	if (getenv("SELINUX_INIT") == NULL) {
@@ -196,10 +205,13 @@ int main(int argc, char **argv)
 
 	printf("OpenRC init version %s starting\n", VERSION);
 
-	if (argc > 1)
-		default_runlevel = argv[1];
-	else
+	if (argc > 1) {
+		if (strcmp(argv[1], "-i") != 0) {
+			default_runlevel = argv[1];
+		}
+	} else {
 		default_runlevel = NULL;
+	}
 
 	if (default_runlevel && strcmp(default_runlevel, "reexec") == 0)
 		reexec = true;
