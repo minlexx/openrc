@@ -208,6 +208,8 @@ int main(int argc, char **argv)
 	if (argc > 1) {
 		if (strcmp(argv[1], "-i") != 0) {
 			default_runlevel = argv[1];
+		} else {
+			default_runlevel = NULL;
 		}
 	} else {
 		default_runlevel = NULL;
